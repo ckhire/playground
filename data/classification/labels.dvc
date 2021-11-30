@@ -1,0 +1,5 @@
+outs:
+- md5: 6d9232ab5205d9c5241c71a45c0ab88f.dir
+  size: 415
+  nfiles: 3
+  path: labels
