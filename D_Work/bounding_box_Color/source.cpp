@@ -5,6 +5,7 @@
 using namespace std;
 using namespace cv;
 
+
 int main() {
     
     int t1,t2, counter = 0;
@@ -12,16 +13,18 @@ int main() {
     int img_h = 0;
     int img_bb_w = 0;
     int img_bb_h = 0;
+    float r_perc = 0;
+    float na_perc = 0;
     void get_Pixel_Index(Mat);
     Vec3b *pixel = NULL;
     vector<int> R_Index;
     vector<int> N_Index;
-
+    
     int r_counter = 0;
     int n_counter = 0;
-
+    
     Mat img_src = imread("D:/Local_Development/03.ColorDetection/src/red_1.jpg", IMREAD_COLOR);
-
+    
     img_w = img_src.size().width;
     img_h = img_src.size().height;
 
@@ -88,6 +91,11 @@ int main() {
     std::cout << "pixels count : " << counter << endl;
     std::cout << "Red colour count : " <<r_counter<< endl;
     std::cout << "Not Applicable colour count : " <<n_counter<< endl;
+
+    r_perc = ((float)r_counter / (float)counter) * 100.0;
+    std::cout << "Red colour perentage : " <<r_perc<< endl;
+    na_perc = ((float)n_counter / (float)counter) * 100.0;
+    std::cout << "Not Applicable colour perentage : " <<na_perc<< endl;
 
     t2 = getTickCount();
 
