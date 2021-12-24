@@ -1,4 +1,4 @@
 [core]
-    remote = storage
-['remote "storage"']
-    url = gdrive://1s5VwCWtaTW2X4qx5vTEhI_MKSqytoo6Q
+    remote = gdrive
+['remote "gdrive"']
+    url = gdrive://1RRPJZH8I_iGPVZTCu7cr69B3PLoDfilq/detection
