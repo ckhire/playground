@@ -9,6 +9,9 @@ Methods :
 
 */
 
+#define IMG_WIDTH 21
+#define IMG_HEIGHT 42
+
 int r = 0;
 int n = 0;
 
@@ -22,8 +25,10 @@ class Color_Count
     
     public:
     int dump;
+    int Image_Buffer[IMG_HEIGHT][IMG_WIDTH];
     //int **Index_List;
     void release(void);
     bool file_read_and_get_data(FILE *);
+    void bounding_box_Attrib(int x, int y, int width, int height);
 };
 

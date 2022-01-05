@@ -35,20 +35,26 @@ int incremental_r = 0;
 float r_perc = 0;
 float na_perc = 0;
 
+
 int total_Pixels = 0;
 
 FILE* output = NULL;
 FILE* file = NULL;
 
+//Bounding box Attributes
+int N_Count = 0 , R_Count = 0 ;
+int Pixel_Count = 0;
+
 void Allocate_Memory(char*);
+
+void bounding_Box_Attrib(int x, int y, int w, int h);
 
 int main()
 {
-  
     Color_Count color;
 
-    fopen_s(&file,"data.txt", "r");
-    fopen_s(&output, "output.txt", "w");
+    file = fopen("data.txt", "r");
+    output = fopen("output.txt", "w");
     if (file == NULL)
     {
         cout << "file not opend...!\n";
@@ -58,26 +64,8 @@ int main()
     color.file_read_and_get_data(file);
 
     cout << endl << "-----Color with the Index---- " << endl;
-    map<char*, char*>::iterator itr = color_counter.begin();
-
-    /*convert char to int */
-    //itr++;
-    while (itr != color_counter.end())
-    {
-        //color_buffer[color_buffer_itr][0] = atoi(itr->first);
-        //color_buffer[color_buffer_itr][1] = *(int*)(itr->second);
-        //cout << color_buffer[color_buffer_itr][0] << " ";
-        //cout << "Color buffer : " << color_buffer[color_buffer_itr][0] << " " << color_buffer[color_buffer_itr][1] << endl;
-        //cout << "Color buffer : " << atoi(itr->first) << " " << *(int*)(itr->second) << endl;
-        //itr++;
-        //cout << "Color buffer : " << itr->first << " " << itr->second << endl;
-        itr++;
-        //color_buffer_itr++;
-    }
-    //cout << "Total Pixel Count :" << total_Pixels << endl;
 
     color_buffer_itr = 0;
-    //cout << color_buffer_itr << endl;
 
     for (int i = 0; i < IMG_HEIGHT; i++)
     {
@@ -89,19 +77,7 @@ int main()
         }
         cout << endl;
     }
-
-    cout << "--------------\n";
-
-    /*for (int i = 0; i < IMG_HEIGHT; i++)
-    {
-        for (int j = 0; j < IMG_WIDTH; j++)
-        {
-            cout<<Image_Buffer[i][j]<<" ";
-        }
-        cout<<endl;
-    }*/
     
-    cout<<"char size = "<<sizeof(char);
     cout << "--------------\n";
     cout << "Total Pixel Count :" << total_Pixels << endl;
     cout << "N  Color Count :" << n << endl;
@@ -110,11 +86,53 @@ int main()
     r_perc = ((float)r / (float)total_Pixels) * 100.0;
     cout << "Red colour perentage : " << r_perc << endl;
     na_perc = ((float)n / (float)total_Pixels) * 100.0;
+    cout << "Not Applicable colour perentage : " << na_perc << endl<<endl;
+
+    /*start working on bounding box */
+
+    cout<<"Bounding Box Pixel Data : "<<endl<<endl;
+
+    bounding_Box_Attrib(5,5,10,10);
+
+    cout<<endl<<"Pixel Count : "<<Pixel_Count<<endl;
+    cout<<"Not Applicable Count : "<<N_Count<<endl;
+    cout<<"Red Color Count : "<<R_Count<<endl;
+    
+    r_perc = ((float)R_Count / (float)Pixel_Count) * 100.0;
+    cout << "Red colour perentage : " << r_perc << endl;
+    na_perc = ((float)N_Count / (float)Pixel_Count) * 100.0;
     cout << "Not Applicable colour perentage : " << na_perc << endl;
 
     color.release();
 
     return (0);
+
+}
+
+void bounding_Box_Attrib(int x, int y, int w, int h)
+{
+    int temp[w-x][h-y];
+
+    for (int i = y; i < h; i++)
+    {
+        for (int j = x; j < w; j++)
+        {
+            temp[i][j] = Image_Buffer[i][j];
+            cout << temp[i][j] << " ";
+            
+            if(Image_Buffer[i][j] == 78)
+            {
+                N_Count++;
+            }
+
+            if( Image_Buffer[i][j] == 82)
+            {
+                R_Count++;
+            } 
+            Pixel_Count++;
+        }
+        cout << endl;
+    }
 
 }
 
@@ -172,17 +190,9 @@ int Color_Count::string_Seperator(char* str)
         temp_counter++;
     }
     
-    //color_counter.insert(pair<char*, char*>(temp_str[1], temp_str[7]));
     color_buffer[color_buffer_itr][0] = atoi(temp_str[1]);
     color_buffer[color_buffer_itr][1] = *(int*)(temp_str[7]);
-    cout << color_buffer[color_buffer_itr][0] << " " << color_buffer[color_buffer_itr][1] << endl;
-   
-    //fprintf_s(output, temp_str[1]," ");
-    fprintf_s(output, temp_str[7]);
-    fprintf_s(output,"\n");
-   
-    
-    
+
     temp_counter = 0;
 
     color_buffer_itr++;
