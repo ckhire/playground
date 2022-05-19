@@ -10,4 +10,6 @@ There are a number of web technologies that store data of one kind or another on
 ## Interfaces
 To get access to a database, call open() on the indexedDB attribute of a window object. This method returns an IDBRequest object; asynchronous operations communicate to the calling application by firing events on IDBRequest objects.
 
-## Connecting to a database
+## Interfaces
+To get access to a database, call open() on the indexedDB attribute of a window object. This method returns an IDBRequest object; asynchronous operations communicate to the calling application by firing events on IDBRequest objects.
+
