@@ -1,11 +1,15 @@
+
 # IndexedDB : 
 IndexedDB is a low-level API for client-side storage of significant amounts of structured data, including files.
- IndexedDB lets you store and retrieve objects that are indexed with a key and more powerful than localStorage;
+IndexedDB lets you store and retrieve objects that are indexed with a key .
 
 [documentation link](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+> Note:
+  - before starting indexedDB read concept of  ***async await*** 
+  - clear concept local scope , global scope, block and funtional scope of variable/function
 
- # Storage limits : 
-limit of of the IndexedDB database will be the user's disk space and operating system.
+ ## Storage limits : 
+limit of the IndexedDB database will be the user's disk space and operating system.
 
 # IndexedDB Structure:
 - database : 
@@ -17,25 +21,39 @@ limit of of the IndexedDB database will be the user's disk space and operating s
 An object store contains the records stored as key-value pairs.
 
 
-# Transaction in indexedDB
+## Transaction in indexedDB
  - A transaction in database context is an operation or multiple operations that must all run successfully, otherwise none of them will be run at all.
  - To understand why transactions are necessary, the most common example is transferring money between accounts in a bank database. A transfer operation includes both remove money from one account and add money to another. If the add money operation fails for any reason, you also need the remove money operation to fail as well
 
 
-# Index:
+## Index:
  use of an index in a database is on the primary key which is something unique (like an ID number) about the item stored in your database.
 
-# Using a key generator
+## Using a key generator
 Setting up an autoIncrement flag when creating the object store would enable the key generator for that object store.
 With the key generator, the key would be generated automatically as you add the value to the object store. **The current number of a key generator is always set to 1 when the object store for that key generator is first created. Basically the newly auto-generated key is increased by 1 based on the previous key. The current number for a key generator never decreases**
 
 ```js
 var objStore = db.createObjectStore("names", { autoIncrement : true });  // this will increase the key by one but it never decreases even if you delete any data from table 
 ```
-# onupgrandeneeded Event
+## onupgrandeneeded Event
 - this event fires when the database version number is incrementing or new database is being created.
 
-# Check if the IndexedDB is supported
+```js
+request.onupgradeneeded = function () {
+  const db = request.result;
+  const store = db.createObjectStore("cars", { keyPath: "id" });
+  store.createIndex("cars_colour", ["colour"], { unique: false });
+
+};
+```
+**Break This Code Line By Line**
+- We are inside the onupgradeneeded event so we can assume the database exists, otherwise the onerror function would have triggered
+- keyPath is the name of the field on the object that IndexedDB will use to identify it.
+-we can also add the  **{ autoincrement: true }** to have it set to a unique id manually that you don't need to set yourself. The first item you insert would have an id of 0, then second item and id of 1, and so on.
+-Adding indexes allows us to search inside of our object store by specific terms aside from just the value defined as the keyPath. This index will allow us to search for car objects by their colour property
+
+## Check if the IndexedDB is supported
 
 ```js
 if (!window.indexedDB) {
@@ -45,7 +63,7 @@ if (!window.indexedDB) {
 ```
 
 
- # opening Database :
+ ## Opening Database :
 
  ```js 
  let openRequest = indexedDB.open(name, version);
@@ -74,11 +92,7 @@ openRequest.onsuccess = function() {
 
 ```
 
-
-        
-
-
-# creating an IndexedDB to store data:
+# Creating an IndexedDB to store data:
  
  ```js
 
@@ -104,9 +118,11 @@ openRequest.onsuccess = function() {
  }
  ```
 
+ 
+ # adding data into store:
   - **add()** :   function requires that no object already be in the database with the same key. If you're trying to modify an existing entry, or you don't care if one exists already, you can use the  function
 - **put()** : function which requires or dosen't matter that object in the database with same key present
- # adding data into store:
+ 
 
  ```js
 //  function to add data into database table
@@ -129,7 +145,14 @@ const addData =(e)=>{
 }
  ```
 
- # retireved Data from DB
+ # Retireved Data from DB
+
+ - **get()** :   retrieving specific records from an object store.
+ - **getAll()** : returns  object containing all objects in the object store matching the specified parameter or all objects in the store if no parameters are given <br>
+    ***syntax :- ***
+    - getAll()
+    - getAll(query)
+    - getAll(query, count)
 
  ```js
 const showData =e=>{
@@ -150,3 +173,60 @@ const showData =e=>{
     }
 }
  ```
+# Deleting data from DB
+we can delete data from DB in  2 way 
+- delete data one by one 
+- delete all data at once 
+
+***Delete data One by one***
+- delete()
+
+```js
+var request = db.transaction(["storeName"], "readwrite")
+                .objectStore("storeName")
+                .delete("uniqueID");
+request.onsuccess = event => {
+  // write messaeg you want to show once data delete
+};
+```
+
+**Deleting All Data at once**
+ - clear()
+
+ ```js
+   const DeleteAll = (e) => {
+   
+    const request = db
+      .transaction("storeName", "readwrite")
+      .objectStore("StoreName")
+      .clear();
+
+    request.onsuccess = () => {
+      console.log(`empty`);
+    };
+    request.onerror = (err) => {
+      console.error(`error`);
+    };
+  };
+
+ ```
+
+# Common Error I Faced while working with indexedDB
+1. 
+  - Cannot read property 'transaction' of undefined IndexedDB:
+  - Uncaught TypeError: Cannot read property 'transaction' of null with an indexeddb
+ ```js 
+db.transaction('storeName')  //you are not getting db value inside the function 
+
+  ``` 
+### solution link:-
+[GitHub page Link ](https://stackoverflow.com/questions/53918546/cannot-read-property-transaction-of-undefined-indexeddb)  <br>
+ [GitHub Pages Link](https://stackoverflow.com/questions/24256202/uncaught-typeerror-cannot-read-property-transaction-of-null-with-an-indexeddb).
+
+2. 
+- "TypeError: db is null" when starting a transaction in indexedDB
+-  Cannot read property 'db' of undefined IndexedDB; <br>
+ **solutions/reason**
+    - this occure because may be your db is not created  <br>
+     - **variable scope** : may be **db** variable declear in block scope or functional scope  
+ [GitHub Pages Link](https://stackoverflow.com/questions/12498412/typeerror-db-is-null-when-starting-a-transaction-in-indexeddb).
