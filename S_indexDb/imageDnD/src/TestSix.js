@@ -5,6 +5,7 @@ function TestSix() {
   const [text, settext] = useState("");
   const [file, setfile] = useState("");
   const [arr, setarr] = useState([]);
+  const [multipleDataArray, setmultipleDataArray] = useState([]);
   // const [image, setimage] = useState();
   let db;
 
@@ -76,17 +77,12 @@ function TestSix() {
   };
 
    function deleteData(e) {
-
-    console.log('hello');
     console.log(e.target.value);
     const id = e.target.value;
     const tx = db.transaction('book','readwrite');
     const store = tx.objectStore('book');
     const result =  store.get(id);
-
-    if(!result){
-      console.log('error', id);
-    }
+    console.log( result);
 
      store.delete(id);
     console.log('deleted image having ID: ', id);
@@ -95,15 +91,46 @@ function TestSix() {
  
 }
 
-  // useEffect(async()=>{
-  // // await  showData();
-  // },[arr]);
+let multipleDelete=(e)=>{
+  // e.preventDefault();
+console.log(e.target.value);
+var id = e.target.value;
+setmultipleDataArray([...multipleDataArray,id])
+console.log(multipleDataArray);
+const tx = db.transaction('book','readwrite');
+const store = tx.objectStore('book');
 
+for( let i=0; i<multipleDataArray.length; i++){
+  console.log(store);
+      console.log(multipleDataArray[i]);
+      
+      const result =  store.get(multipleDataArray[i]);
+
+      console.log( result);
+     
+      store.delete(multipleDataArray[i]);
+
+    }
+    showData();
+
+}
+ 
+const deleteSelectedData=()=>{
+
+  if (confirm("Press a button!")) {
+    multipleDelete()
+  } 
+
+
+ 
+}
 
   const setImageOnChange = (e) => {
     const [file] = e.target.files;
     setfile(URL.createObjectURL(file));
   };
+
+ 
 
   return (
     <>
@@ -168,6 +195,7 @@ function TestSix() {
             </button>
 
             <button onClick={DeleteAll}>Clear All Data</button>
+            <button onClick={deleteSelectedData}>Delete Selected Data</button>
           </form>
         </div>
 
@@ -197,6 +225,7 @@ function TestSix() {
                     </button>
                     <span>{ele.imagesName}</span>
                     <li>
+                      <input type='checkbox' value={ele.imageFile} onClick={multipleDelete}></input>
                       <img
                         src={ele.imageFile}
                         alt="img"
