@@ -17,7 +17,7 @@ function TestSix() {
 
   request.onupgradeneeded = (e) => {
     db = e.target.result;
-    let dbStore = db.createObjectStore("book", {
+    let dbStore = db.createObjectStore("ImageStore", {
       keyPath: "imageFile",
     });
   };
@@ -28,9 +28,9 @@ function TestSix() {
       imagesName: text,
       imageFile: file,
     };
-    let transaction = db.transaction(["book"], "readwrite");
+    let transaction = db.transaction(["ImageStore"], "readwrite");
 
-    let dbStore = transaction.objectStore("book");
+    let dbStore = transaction.objectStore("ImageStore");
 
     console.log(dbStore);
     dbStore.add(data);
@@ -45,14 +45,14 @@ function TestSix() {
   const showData = (e) => {
     // e.preventDefault();
     console.log(db);
-    const request = db.transaction("book").objectStore("book").getAll();
+    const request = db.transaction("ImageStore").objectStore("ImageStore").getAll();
 
     request.onsuccess = () => {
-      const book = request.result;
+      const store = request.result;
 
-      console.log(book);
-      console.table(book);
-      setarr(book);
+      console.log(store);
+      console.table(store);
+      setarr(store);
     };
 
     request.onerror = (err) => {
@@ -64,8 +64,8 @@ function TestSix() {
     e.preventDefault();
     console.log(db);
     const request = db
-      .transaction("book", "readwrite")
-      .objectStore("book")
+      .transaction("ImageStore", "readwrite")
+      .objectStore("ImageStore")
       .clear();
 
     request.onsuccess = () => {
@@ -79,8 +79,8 @@ function TestSix() {
   function deleteData(e) {
     console.log(e.target.value);
     const id = e.target.value;
-    const tx = db.transaction("book", "readwrite");
-    const store = tx.objectStore("book");
+    const tx = db.transaction("ImageStore", "readwrite");
+    const store = tx.objectStore("ImageStore");
     const result = store.get(id);
     console.log(result);
 
@@ -102,8 +102,8 @@ function TestSix() {
 
   const deleteSelectedData = () => {
 
-    const tx = db.transaction("book", "readwrite");
-    const store = tx.objectStore("book");
+    const tx = db.transaction("ImageStore", "readwrite");
+    const store = tx.objectStore("ImageStore");
 
     for (let i = 0; i < multipleDataArray.length; i++) {
       // console.log(store);
@@ -119,6 +119,8 @@ function TestSix() {
     showData();
   };
 
+
+  
   const setImageOnChange = (e) => {
     const [file] = e.target.files;
     setfile(URL.createObjectURL(file));
