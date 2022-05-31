@@ -16,7 +16,7 @@ function TestSix() {
   };
 
   request.onupgradeneeded = (e) => {
-     db = e.target.result;
+    db = e.target.result;
     let dbStore = db.createObjectStore("book", {
       keyPath: "imageFile",
     });
@@ -76,61 +76,53 @@ function TestSix() {
     };
   };
 
-   function deleteData(e) {
+  function deleteData(e) {
     console.log(e.target.value);
     const id = e.target.value;
-    const tx = db.transaction('book','readwrite');
-    const store = tx.objectStore('book');
-    const result =  store.get(id);
-    console.log( result);
+    const tx = db.transaction("book", "readwrite");
+    const store = tx.objectStore("book");
+    const result = store.get(id);
+    console.log(result);
 
-     store.delete(id);
-    console.log('deleted image having ID: ', id);
-   
+    store.delete(id);
+    console.log("deleted image having ID: ", id);
+
     showData();
- 
-}
+  }
 
-let multipleDelete=(e)=>{
-  // e.preventDefault();
-console.log(e.target.value);
-var id = e.target.value;
-setmultipleDataArray([...multipleDataArray,id])
-console.log(multipleDataArray);
-const tx = db.transaction('book','readwrite');
-const store = tx.objectStore('book');
+  let multipleSelect = (e) => {
+    // console.log(e.target.value);
+    var id = e.target.value;
+    setmultipleDataArray([...multipleDataArray, id]);
 
-for( let i=0; i<multipleDataArray.length; i++){
-  console.log(store);
+    console.log(multipleDataArray);
+
+    // showData();
+  };
+
+  const deleteSelectedData = () => {
+
+    const tx = db.transaction("book", "readwrite");
+    const store = tx.objectStore("book");
+
+    for (let i = 0; i < multipleDataArray.length; i++) {
+      // console.log(store);
+
       console.log(multipleDataArray[i]);
-      
-      const result =  store.get(multipleDataArray[i]);
 
-      console.log( result);
-     
+      const result = store.get(multipleDataArray[i]);
+
+      console.log(result);
+
       store.delete(multipleDataArray[i]);
-
     }
     showData();
-
-}
- 
-const deleteSelectedData=()=>{
-
-  if (confirm("Press a button!")) {
-    multipleDelete()
-  } 
-
-
- 
-}
+  };
 
   const setImageOnChange = (e) => {
     const [file] = e.target.files;
     setfile(URL.createObjectURL(file));
   };
-
- 
 
   return (
     <>
@@ -220,12 +212,20 @@ const deleteSelectedData=()=>{
               return (
                 <>
                   <div key={i}>
-                    <button type="button" value={ele.imageFile} onClick={deleteData}>
+                    <button
+                      type="button"
+                      value={ele.imageFile}
+                      onClick={deleteData}
+                    >
                       X
                     </button>
                     <span>{ele.imagesName}</span>
                     <li>
-                      <input type='checkbox' value={ele.imageFile} onClick={multipleDelete}></input>
+                      <input
+                        type="checkbox"
+                        value={ele.imageFile}
+                        onClick={multipleSelect}
+                      ></input>
                       <img
                         src={ele.imageFile}
                         alt="img"
