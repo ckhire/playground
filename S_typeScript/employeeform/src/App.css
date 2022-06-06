@@ -1,0 +1,22 @@
+.emp-pic{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.form{
+  width: 450px;
+  border: 1px solid black;
+}
+
+.container{
+  display: flex;
+}
+
+.show{
+  margin-left: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid black;
+  flex-wrap: wrap;
+}
