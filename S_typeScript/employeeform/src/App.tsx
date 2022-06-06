@@ -4,6 +4,16 @@ import "./App.css";
 import Card from "./Card";
 
 const App: FC = () => {
+
+  const [name, setname] = useState<string>("");
+  const [address, setaddress] = useState<any>("");
+  const [location, setlocation] = useState<string>("");
+  const [mail, setmail] = useState<string>("");
+  const [company, setcompany] = useState<string>("");
+  const [pic, setpic] = useState<any>("");
+  const [data, setdata] = useState<Details[]>([]);
+
+
   let db: any;
   const request = window.indexedDB.open("DB");
   request.onsuccess = () => {
@@ -13,8 +23,9 @@ const App: FC = () => {
   request.onupgradeneeded = (e: any) => {
     db = e.target.result;
     db.createObjectStore("employeeDB", {
-      autoIncrement: true
-    });
+      keyPath: 'picName',
+      // autoIncrement: true
+  });
   };
 
   interface Details {
@@ -23,38 +34,32 @@ const App: FC = () => {
     location: string;
     mail: any;
     company: string;
-    pic: any;
+    picName: any;
   }
-  const [name, setname] = useState<string>("");
-  const [address, setaddress] = useState<any>("");
-  const [location, setlocation] = useState<string>("");
-  const [mail, setmail] = useState<string>("");
-  const [company, setcompany] = useState<string>("");
-  const [pic, setpic] = useState<any>("");
-  const [data, setdata] = useState<Details[]>([]);
-  console.log(name);
-  console.log(address);
-  console.log(location);
-  console.log(mail);
-  console.log(company);
-  console.log(pic);
+ 
+  // console.log(name);
+  // console.log(address);
+  // console.log(location);
+  // console.log(mail);
+  // console.log(company);
+  // console.log(pic);
 
   const addEmployeeData = (e: any): void => {
     e.preventDefault();
 
-    const details = {
+    const newEmpData = {
       name: name,
       address: address,
       location: location,
       mail: mail,
       company: company,
-      pic: pic,
+      picName: pic,
     };
-    console.log(details);
+    console.log(newEmpData);
     let transaction = db.transaction(["employeeDB"], "readwrite");
     let store = transaction.objectStore("employeeDB");
     console.log(store);
-    store.add(details);
+    store.add(newEmpData);
   };
 
   const imageChangeHandler = (e: any) => {
@@ -62,9 +67,13 @@ const App: FC = () => {
     setpic(URL.createObjectURL(file));
   };
 
-  async function displayData(e: any) {
+
+  
+
+
+   function displayData(e: any) {
     e.preventDefault();
-    const request = await db
+    const request =  db
       .transaction("employeeDB")
       .objectStore("employeeDB")
       .getAll();
@@ -80,17 +89,27 @@ const App: FC = () => {
     };
   }
 
+  const deleteItemHandler = (e:any)=>{
+    e.preventDefault();
+   console.log(e.target.value);
+   const cardID = e.target.value;
+   const transaction = db.transaction('employeeDB','readwrite');
+   const store = transaction.objectStore('employeeDB');
+   store.delete(cardID)
+ 
+   displayData(e);
+ 
+  }
+
   useEffect(() => {
     // displayData();
   }, []);
 
-  // function deleteSelectedImage(e:any){
-  //   const id = e.target.value;
-  //   const tx = db.transaction('employeeDB','readwrite');
-  //   const store = tx.objectStore('employeeDB');
-  //   const result = store.get(id);
-  //   store.delete(result);
-  // }
+ 
+
+
+
+
   return (
     <>
       <div className="container">
@@ -181,7 +200,8 @@ const App: FC = () => {
               <div style={{margin:'5px'}} >
 
               <Card  key={index}
-              pic ={ele.pic} 
+              deleteItem = {deleteItemHandler}
+              picName ={ele.picName} 
               name = {ele.name || 'Sandeep'} 
               address = {ele.address || 'Kondhwa'}
               location = {ele.address || "vimanNagar"}
