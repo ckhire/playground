@@ -3,6 +3,6 @@
 # https://dvc.org/doc/user-guide/dvcignore
 
 
-.jpg
-.jfif
+*.jpg
+*.jfif
 
